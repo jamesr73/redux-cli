@@ -44,10 +44,10 @@ redux g dumb SimpleButton
 Running `redux new <project name>` will pull down the amazing [Redux Starter Kit](https://github.com/davezuko/react-redux-starter-kit) and
 initialize a new git repo.  Running `new` will automatically set up a `.reduxrc`
 to work with this specific starter kit.  If you want to integrate the CLI in an
-existing project or store your components in different pathes please see [config existing project](#config-existing-project)
+existing project or store your components in different paths please see [config existing project](#config-existing-project)
 
 ### Config Existing Project
-There is an `init` subcommand for you to specify all pathes to where components
+There is an `init` subcommand for you to specify all paths to where components
 live in your project.  The `init` command just creates a `.reduxrc` in your
 project root.  If you want to you can just create the `.reduxrc` manually.  
 
@@ -59,15 +59,15 @@ Final `.reduxrc` might look like this:
   "testBase":"tests",
   "smartPath":"containers",
   "dumbPath":"components",
-  "fileCasing": "default",
+  "fileCasing": "default"
 }
 ```  
 
 **Note on configuration**:  
 This project tries to walk on a fine line between convention and configuration.
 Since the majority of React applications will separate their smart/dumb
-components if you pass in those pathes you'll get those generators for free.
-However, some of the other generators might not write files to the exact pathes
+components if you pass in those paths you'll get those generators for free.
+However, some of the other generators might not write files to the exact paths
 that you use for your project.  It's easy to override the CLI generators with
 your own so that the generators will write files to the correct location.  
 [See: creating custom blueprints](#creating-blueprints).
@@ -85,7 +85,7 @@ blueprints to come!
 |**testBase**|✓|where you keep your tests (relative from root of project)|
 |**smartPath**|✓|where you keep your smart (container) components (relative of sourceBase)|
 |**dumbPath**|✓|where you keep your dumb (pure) components (relative of sourceBase)|
-|**fileCasing**|✓|how do you want generated files to be named (pasal/camel/snake/dashes/default)|
+|**fileCasing**|✓|how do you want generated files to be named (pascal/camel/snake/dashes/default)|
 
 ### Commands
 
@@ -105,6 +105,20 @@ blueprints to come!
 |`redux g smart <smart name>`|generates a smart connected component and test file||
 |`redux g form <form name>`|generates a form component (assumes redux-form)||
 |`redux g duck <duck name>`|generates a redux duck and test file||
+
+You can also see what files would get created with the `--dry-run` option like
+so:
+
+```
+redux g dumb MyNewComponent --dry-run
+
+// Output:
+
+  info: installing blueprint...
+  would create: /MyNewComponent.js
+  would create: /MyNewComponent.test.js
+  info: finished installing blueprint.
+```
 
 ### Examples
 Below are some examples of using the generator to speed up development:
@@ -242,7 +256,7 @@ module.exports = {
     return {};
   },
 
-  fileMapTokens: function(options) (
+  fileMapTokens: function(options) {
     // Return custom tokens to be replaced in your files
     return {
       __token__: function(options){
@@ -343,15 +357,6 @@ the the `options` and `locals` hashes as parameters. Typically used for
 validating any additional command line options or for any asynchronous
 setup that is needed.   
 
-
-### Roadmap
-- [x] template overriding so people can customize templates
-- [ ] more robust blueprint options
-- [ ] uninstall hooks for blueprints
-- [ ] support for fields option in form generator
-- [ ] support for routing (generates both view and route and adds to routes)
-- [ ] multiple starter kit support
-
 ### Contributing
 This CLI is very much in the beginning phases and I would love to have people
 help me to make it more robust.  Currently, it's pretty opinonated to use the
@@ -388,6 +393,9 @@ npm run lint     // lints all files in src and test
 
 ### Changelog
 
+`1.8.0` - adds `--dry-run` option to generators so you can see files before committing
+`1.7.0` - adds option to use a ui kit boilerplate with the `-U` flag.  
+`1.6.0` - adds option to use a different boilerplate with the `-B` flag.  Fixes windows issues  
 `1.5.1` - fixes windows support, addes ejs eslint plugin, fixes bug with UI in windows  
 `1.4.1` - default to https instead of ssh for pulling project down  
 `1.4.0` - better generator help messages  
