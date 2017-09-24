@@ -8,28 +8,27 @@ import { setupPrompt } from '../prompts/setup';
 import { success } from '../util/text-helper';
 
 class Init extends SubCommand {
-  constructor() {
+  constructor () {
     super();
     setupPrompt('initialization', prompt);
   }
 
-  printUserHelp() {
+  printUserHelp () {
     this.ui.write(
-      'inititialization command to create a .reduxrc which has project settings'
+      'initialization command to create a .reduxrc which has project settings'
     );
   }
 
-  run() {
+  run () {
     this.ui.write(this.cliLogo());
     prompt.get(initPrompt, (err, result) => {
       this.ui.writeInfo('Saving your settings...');
-      this.settings.setAllSettings(result);
-      this.settings.save();
+      this.settings.saveDefaults(result);
       this.ui.writeCreate('.reduxrc with configuration saved in project root.');
     });
   }
 
-  cliLogo() {
+  cliLogo () {
     return success(
       figlet.textSync('Redux-CLI', {
         font: 'Doom',
