@@ -33,6 +33,11 @@ export default class Blueprint {
     this.name = path.basename(blueprintPath);
   }
 
+  // HOOK: this can be overridden
+  description() {
+    return `Generates a new ${this.name}`;
+  }
+
   // HOOK: that can be overridden.  Defaults to look in <blueprint-name>/files.
   filesPath() {
     return path.join(this.path, 'files');
@@ -93,6 +98,46 @@ export default class Blueprint {
     }
   }
 
+  static loadAll(options = {}) {
+    return generateLookupPaths(options.paths).map(lookupPath => {
+      const blueprintFiles = dir(lookupPath);
+      const packagePath = path.join(lookupPath, '../package.json');
+      let source;
+
+      if (fileExists(packagePath)) {
+        source = require(packagePath).name;
+      } else {
+        source = path.basename(path.join(lookupPath, '..'));
+      }
+
+      const blueprints = blueprintFiles.map(filePath => this.load(filePath));
+
+      return {
+        source,
+        blueprints: _.compact(blueprints)
+      };
+    });
+  }
+
+  static loadRunnable(options = {}) {
+    const blueprints = this.loadAll(options);
+    const runnable = [];
+
+    const alreadyAdded = blueprint =>
+      runnable.find(existing => existing.name === blueprint.name);
+
+    blueprints.forEach(source => {
+      source.blueprints.forEach(blueprint => {
+        if (!alreadyAdded(blueprint)) {
+          runnable.push(blueprint);
+        }
+      });
+    });
+
+    return runnable;
+  }
+
+  // TODO: refactor list to use loadAll or loadRunnable
   static list(options = {}) {
     return generateLookupPaths(options.paths).map(lookupPath => {
       const blueprintFiles = dir(lookupPath);
@@ -293,4 +338,3 @@ export default class Blueprint {
     // return normalizeEntityName(name);
   // }
 }
-
