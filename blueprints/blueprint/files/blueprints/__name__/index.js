@@ -6,8 +6,8 @@ module.exports = {
   <% } %>
   <% if (command) { %>
   command: {
-    aliases: [],
-    builder: yargs => yargs
+    aliases: <%- aliases %>,
+    builder: yargs => yargs // can also accept blueprint as second parameter
   },
   <% } %>
   <% if (locals) { %>

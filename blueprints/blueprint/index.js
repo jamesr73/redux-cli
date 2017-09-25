@@ -17,6 +17,12 @@ module.exports = {
           describe: 'add hook to specify blueprint command options',
           type: 'boolean'
         })
+        .option('aliases', {
+          alias: 'A',
+          describe: 'specify alias(es) for the command',
+          type: 'array',
+          default: []
+        })
         .option('locals', {
           alias: 'l',
           describe: 'add hook to specify locals',
@@ -40,6 +46,17 @@ module.exports = {
   },
 
   locals({ entity: { options } }) {
+    // aliases imply command
+    if (options.aliases.length) {
+      options.command = true;
+    }
+    // aliases to be rendered as a string
+    options.aliases = JSON.stringify(options.aliases);
+
+    // NB: if command was specified but aliases is an empty array it will
+    // still be rendered. This is harmless and serves as a reminder
+    // to the blueprint author of the supported feature and syntax
+
     return options;
   }
 };
