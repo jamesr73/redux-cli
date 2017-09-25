@@ -38,6 +38,7 @@ const buildBlueprintCommands = yargs => {
   const customCommand = blueprint => {
     let custom = blueprint.command || {};
     let builder = custom.builder || {};
+    let aliases = blueprint.settings.aliases || custom.aliases || [];
 
     if (typeof builder === 'function' && builder.length === 2) {
       const wrappedBuilder = builder;
@@ -53,6 +54,7 @@ const buildBlueprintCommands = yargs => {
 
     return {
       ...custom,
+      aliases,
       builder
     };
   };
