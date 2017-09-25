@@ -66,7 +66,7 @@ const buildBlueprintCommands = yargs => {
     const cliArgs = {
       entity: {
         name: argv.name,
-        options: argv,
+        options: { ...blueprint.settings, ...argv },
         rawArgs: argv
       },
       debug: argv.verbose,
@@ -75,14 +75,32 @@ const buildBlueprintCommands = yargs => {
     subCommand.run(blueprint.name, cliArgs);
   };
 
-  const blueprintCommands = Blueprint.loadRunnable().map(blueprint => ({
-    ...customCommand(blueprint),
-    command: `${blueprint.name} <name>`, // can we customise <name>?
-    describe: blueprint.description(),
-    handler: commandHandler(blueprint)
-  }));
-
-  blueprintCommands.forEach(blueprint => yargs.command(blueprint));
+  Blueprint.loadRunnable().forEach(blueprint => {
+    loadBlueprintSettings(blueprint);
+    yargs.command({
+      ...customCommand(blueprint),
+      command: `${blueprint.name} <name>`, // can we customise <name>?
+      describe: blueprint.description(),
+      handler: commandHandler(blueprint)
+    });
+  });
 
   return yargs;
 };
+
+/*
+  TODO:
+    refactor this into a blueprint loader task (that also replaces
+    Blueprint.loadRunnable). Only here to test the concept.
+*/
+const settings = subCommand.environment.settings.settings || {};
+settings.bp = settings.bp || {};
+const loadBlueprintSettings = blueprint => {
+  const blueprintSettings = getBlueprintSettings(blueprint);
+  blueprint.settings = blueprintSettings;
+  return blueprintSettings;
+};
+const getBlueprintSettings = blueprint => ({
+  ...settings.bp.common,
+  ...settings.bp[blueprint.name]
+});

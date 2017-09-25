@@ -5,12 +5,13 @@ module.exports = {
 
   command: {
     aliases: ['bp'],
-    builder: yargs =>
+    builder: (yargs, blueprint) =>
       yargs
         .option('description', {
           alias: 'D',
           describe: 'override default description',
-          type: 'boolean'
+          type: 'boolean',
+          default: blueprint.settings.description
         })
         .option('command', {
           alias: 'c',
