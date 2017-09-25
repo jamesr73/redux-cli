@@ -9,7 +9,7 @@ Create a new project from react-redux-starter-kit`;
 
 module.exports = {
   command: 'new <project_name>',
-  describe: 'Create a new blueprint-enabled project',
+  //describe: 'Create a new blueprint-enabled project',
   describe: false, // hide in 2.0
   builder: yargs =>
     yargs
