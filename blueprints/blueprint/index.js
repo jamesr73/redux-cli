@@ -43,20 +43,38 @@ module.exports = {
           describe: 'add hook for afterInstall',
           type: 'boolean'
         })
+        .option('all-hooks', {
+          alias: 'H',
+          describe: 'shortcut to add all hooks, equivalent to -clmba',
+          type: 'boolean'
+        })
   },
 
   locals({ entity: { options } }) {
-    // aliases imply command
-    if (options.aliases.length) {
-      options.command = true;
-    }
-    // aliases to be rendered as a string
-    options.aliases = JSON.stringify(options.aliases);
-
-    // NB: if command was specified but aliases is an empty array it will
-    // still be rendered. This is harmless and serves as a reminder
-    // to the blueprint author of the supported feature and syntax
-
-    return options;
+    return sanitizeOptions(options);
   }
 };
+
+function sanitizeOptions(options) {
+  // aliases imply command
+  if (options.aliases.length) {
+    options.command = true;
+  }
+  // aliases to be rendered as a string
+  options.aliases = JSON.stringify(options.aliases);
+
+  // NB: if command was specified but aliases is an empty array it will
+  // still be rendered. This is harmless and serves as a reminder
+  // to the blueprint author of the supported feature and syntax
+
+  // allHooks?
+  if (options.allHooks) {
+    options.command = true;
+    options.locals = true;
+    options.fileMapTokens = true;
+    options.beforeInstall = true;
+    options.afterInstall = true;
+  }
+
+  return options;
+}
