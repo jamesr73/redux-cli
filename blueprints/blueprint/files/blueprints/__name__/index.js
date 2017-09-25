@@ -7,7 +7,13 @@ module.exports = {
   <% if (command) { %>
   command: {
     aliases: <%- aliases %>,
-    builder: yargs => yargs // can also accept blueprint as second parameter
+    builder: {
+      opt: {
+        alias: 'o',
+        description: 'blueprint option',
+        type: 'string'
+      }
+    }
   },
   <% } %>
   <% if (locals) { %>

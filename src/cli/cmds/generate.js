@@ -4,7 +4,7 @@ import Blueprint from '../../models/blueprint';
 const subCommand = new Generate();
 
 const usage = `Usage:
-  $0 generate <blueprint> <name> [options]
+  $0 generate <blueprint> <name>
   $0 help generate <blueprint>`;
 
 module.exports = {
@@ -34,57 +34,105 @@ module.exports = {
   handler: argv => console.log(`Unrecognised blueprint '${argv.blueprint}'`)
 };
 
+/*
+  Construct yargs sub commands for each available blueprint, allowing additional
+  options to be specified in the blueprint itself and in the rc file(s)
+*/
 const buildBlueprintCommands = yargs => {
+  /*
+    Build a yargs command module object from options defined in the blueprint
+    https://github.com/yargs/yargs/blob/master/docs/advanced.md#providing-a-command-module
+
+    {
+      command: 'blueprint <name>',
+      aliases: [],
+      describe: 'Generates a blueprint',
+      builder: yargs => yargs,
+      handler: argv => subCommand.run()
+    }
+  }
+  */
   const customCommand = blueprint => {
     let custom = blueprint.command || {};
-    let builder = custom.builder || {};
-    let aliases = blueprint.settings.aliases || custom.aliases || [];
+    let { aliases = [], usage, options, check, examples, sanitize } = custom;
 
-    if (typeof builder === 'function' && builder.length === 2) {
-      const wrappedBuilder = builder;
-      builder = yargs => wrappedBuilder(yargs, blueprint);
-      // opportunity here to interrogate yargs for configuration
+    // mandate the command name to guarantee name is passed to generate task
+    let command = `${blueprint.name} <name>`;
+
+    // alert the user to the prescense of options for the command
+    if (options) {
+      command = command + ' [options]';
     }
 
-    // could do more to understand if options have been specified
-    // and add [options] to the command usage
+    // rc aliases override blueprint configuration
+    aliases = [].concat(blueprint.settings.aliases || aliases);
 
-    // could also allow the blueprint to define an custom <name> and/or
-    // more positional parameters
+    // default usage
+    if (!usage) {
+      usage = `Usage:\n  $0 generate ${command}`;
+      aliases.forEach(
+        alias =>
+          (usage += `\n  $0 generate ${command.replace(blueprint.name, alias)}`)
+      );
+    }
+
+    // default options from settings
+    if (options && blueprint.settings) {
+      Object.keys(options).forEach(option => {
+        if (blueprint.settings[option]) {
+          options[option].default = blueprint.settings[option];
+        }
+      });
+    }
+
+    // builder brings together multiple customizations, whilst keeping the
+    // options easy to parse for prompting in the init command
+    const builder = yargs => {
+      if (usage) yargs.usage(usage);
+      if (options) yargs.options(options);
+      if (check) yargs.check(check, false);
+      if (examples) {
+        [].concat(examples).forEach(example => yargs.example(example));
+      }
+      return yargs;
+    };
+
+    // handler runs the generate blueprint task
+    const handler = argv => {
+      // merge command line options into rc options
+      let options = { ...blueprint.settings, ...argv };
+
+      // tidy up options before passing them on so that all hooks have access
+      // to the clean version
+      if (sanitize) options = sanitize(options);
+
+      const cliArgs = {
+        entity: {
+          name: argv.name,
+          options,
+          rawArgs: argv
+        },
+        debug: argv.verbose,
+        dryRun: argv.dryRun
+      };
+      subCommand.run(blueprint.name, cliArgs);
+    };
 
     return {
-      ...custom,
+      command,
       aliases,
-      builder
+      describe: blueprint.description(),
+      builder,
+      handler
     };
   };
 
-  const commandHandler = blueprint => argv => {
-    // would be nice to flatten this out, i.e. just pass full argv
-    // rawArgs doesn't mean much with yargs
-    // might be the appropriate place to consilidate .blueprintrc
-    //    { ...options[default], ...options[blueprint.name], ...argv }
-    // OR { ...blueprint.settings, ...argv }
-    const cliArgs = {
-      entity: {
-        name: argv.name,
-        options: { ...blueprint.settings, ...argv },
-        rawArgs: argv
-      },
-      debug: argv.verbose,
-      dryRun: argv.dryRun
-    };
-    subCommand.run(blueprint.name, cliArgs);
-  };
-
+  /*
+    Build a command for each of the blueprints found on the search path
+  */
   Blueprint.loadRunnable().forEach(blueprint => {
     loadBlueprintSettings(blueprint);
-    yargs.command({
-      ...customCommand(blueprint),
-      command: `${blueprint.name} <name>`, // can we customise <name>?
-      describe: blueprint.description(),
-      handler: commandHandler(blueprint)
-    });
+    yargs.command(customCommand(blueprint));
   });
 
   return yargs;
