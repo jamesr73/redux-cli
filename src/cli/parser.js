@@ -1,3 +1,3 @@
-import parser from './main';
+import getParser from './main';
 
 module.exports = parser.argv;
