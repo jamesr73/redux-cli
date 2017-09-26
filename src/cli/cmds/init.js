@@ -4,6 +4,6 @@ const subCommand = new Init();
 
 module.exports = {
   command: 'init',
-  describe: 'Initialize .reduxrc for the current project',
+  describe: 'Initialize .blueprintrc for the current project',
   handler: () => subCommand.run()
 };
