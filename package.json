@@ -7,7 +7,8 @@
     "node": ">=5.1"
   },
   "scripts": {
-    "test": "npm run lint && jest --forceExit && codecov --token=75e3e765-443c-4d31-a8f5-b0ca3be8e55f",
+    "test": "jest --forceExit && codecov --token=75e3e765-443c-4d31-a8f5-b0ca3be8e55f",
+    "posttest": "npm run lint",
     "test:nocov": "jest --coverage=false --forceExit",
     "test:cov": "jest --forceExit",
     "test:watch": "jest --forceExit --watch --notify",
