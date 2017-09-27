@@ -7,13 +7,16 @@ module.exports = {
   <% if (command) { %>
   command: {
     aliases: <%- aliases %>,
-    builder: {
+    options: {
       opt: {
         alias: 'o',
         description: 'blueprint option',
         type: 'string'
       }
-    }
+    },
+    check: (argv, options) => true,
+    examples: [],
+    sanitize: argv => argv
   },
   <% } %>
   <% if (locals) { %>

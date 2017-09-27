@@ -52,6 +52,7 @@ module.exports = {
       '$0 generate blueprint files_only',
       '$0 generate blueprint complex_bp --aliases cpx --all-hooks'
     ],
+    epilogue: 'Documentation: https://github.com/SpencerCDixon/redux-cli#creating-blueprints',
     sanitize: argv => {
       // aliases imply command
       if (argv.aliases.length) {
