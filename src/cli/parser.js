@@ -7,9 +7,15 @@ const usage = `Usage:
 const parser = yargs
   .usage(usage)
   .commandDir('cmds')
+  .demandCommand(1, 'Provide a command to run')
+  .recommendCommands()
+  .strict()
+  .help()
   .alias('help', 'h')
+  .version()
   .alias('version', 'V')
   .global('version', false)
-  .demandCommand(1, 'Please specify a command to execute');
+  // TODO: add epilogue after renaming repo to blueptint-cli
+  //.epilogue('See https://github.com/SpencerCDixon/redux-cli for more info');
 
 export default parser;
