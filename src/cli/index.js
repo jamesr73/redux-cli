@@ -1,3 +1,3 @@
 import parser from './parser';
 
-module.exports = parser.argv;
+module.exports = parser.parse(process.argv.slice(2));
