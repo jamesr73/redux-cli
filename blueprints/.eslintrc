@@ -11,5 +11,10 @@
     "expect": false,
     "should": false,
     "sinon": false
-  }
+  },
+  "overrides": [
+    {
+      "excludedFiles": "blueprint/files/blueprints/__name__/files/index.js"
+    }
+  ]
 }
