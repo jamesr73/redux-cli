@@ -54,7 +54,16 @@ const buildBlueprintCommands = yargs => {
   */
   const customCommand = blueprint => {
     let custom = blueprint.command || {};
-    let { aliases = [], usage, options, check, examples, sanitize } = custom;
+    let {
+      aliases = [],
+      usage,
+      options,
+      examples,
+      epilog,
+      epilogue,
+      check,
+      sanitize
+    } = custom;
 
     // mandate the command name to guarantee name is passed to generate task
     let command = `${blueprint.name} <name>`;
@@ -69,6 +78,7 @@ const buildBlueprintCommands = yargs => {
 
     // default usage
     if (!usage) {
+      //usage = `Description:\n  ${blueprint.description()}\n\n`;
       usage = `Usage:\n  $0 generate ${command}`;
       aliases.forEach(
         alias =>
@@ -85,15 +95,21 @@ const buildBlueprintCommands = yargs => {
       });
     }
 
+    // alterate epilogue keys
+    epilogue = epilogue || epilog;
+
     // builder brings together multiple customizations, whilst keeping the
     // options easy to parse for prompting in the init command
     const builder = yargs => {
-      if (usage) yargs.usage(usage);
+      yargs.usage(usage).strict(false); // allow undocumented options through
+
       if (options) yargs.options(options);
       if (check) yargs.check(check, false);
       if (examples) {
         [].concat(examples).forEach(example => yargs.example(example));
       }
+      if (epilogue) yargs.epilogue(epilogue);
+
       return yargs;
     };
 
