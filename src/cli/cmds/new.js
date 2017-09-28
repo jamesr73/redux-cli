@@ -28,6 +28,15 @@ module.exports = {
         alias: 'U',
         describe: 'Create from redux-cli-ui-kit-boilerplate',
         type: 'boolean'
+      })
+      .strict()
+      .check(argv => {
+        if (argv.useBoilerplate && argv.useUikit) {
+          throw new Error(
+            'Only specify one of --use-boilerplate or --use-uikit'
+          );
+        }
+        return true;
       }),
   handler: argv => {
     subCommand.run({
