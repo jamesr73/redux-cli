@@ -74,7 +74,7 @@ describe('(CLI) New', () => {
 
   describe('checks options', () => {
     test('requires <project_name>', done => {
-      parser.parse('new', (err, argv, output) => {
+      parser.parse('new', err => {
         expect(err).to.be.instanceof(Object);
         expect(err.message).toEqual(
           'Not enough non-option arguments: got 0, need at least 1'
@@ -84,7 +84,7 @@ describe('(CLI) New', () => {
     });
 
     test('refuses unknown argument', done => {
-      parser.parse('new test_project --gibberish', (err, argv, output) => {
+      parser.parse('new test_project --gibberish', err => {
         expect(err).to.be.instanceof(Object);
         expect(err.message).toEqual('Unknown argument: gibberish');
         done();
@@ -92,7 +92,7 @@ describe('(CLI) New', () => {
     });
 
     test('-B and -U are mutually exclusive', done => {
-      parser.parse('new test_project -BU', (err, argv, output) => {
+      parser.parse('new test_project -BU', err => {
         expect(err).to.be.instanceof(Object);
         expect(err.message).toEqual(
           'Only specify one of --use-boilerplate or --use-uikit'
