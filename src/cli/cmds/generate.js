@@ -16,7 +16,7 @@ module.exports = {
       .usage(usage)
       .option('dry-run', {
         alias: 'd',
-        describe: "List files but don't generate them", // eslint-disable-line
+        describe: "List files but don't generate them",
         type: 'boolean'
       })
       .option('verbose', {

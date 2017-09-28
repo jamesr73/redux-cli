@@ -36,6 +36,7 @@ describe('(CLI) Init', () => {
         expect(Init.mock.instances.length).toEqual(1);
         expect(Init.mock.instances[0].run.mock.calls.length).toEqual(1);
         expect(Init.mock.instances[0].run.mock.calls[0]).toEqual([]);
+        expect(output).toEqual('');
         done();
       });
     });
