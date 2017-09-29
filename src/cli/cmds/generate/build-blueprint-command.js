@@ -8,21 +8,20 @@
     aliases: [],
     describe: 'Generates a blueprint',
     builder: yargs => yargs,
-    handler: argv => subCommand.run()
+    handler: argv => runner.run()
   }
 */
-const buildBlueprintCommand = (blueprint, subCommand) => {
-  let custom = blueprint.command || {};
+const buildBlueprintCommand = (blueprint, runner) => {
+  // extract custom command pieces
   let {
     aliases = [],
-    usage,
     options,
     examples,
     epilog,
     epilogue,
     check,
     sanitize
-  } = custom;
+  } = blueprint.command;
 
   // mandate the command name to guarantee name is passed to generate task
   let command = `${blueprint.name} <name>`;
@@ -36,14 +35,11 @@ const buildBlueprintCommand = (blueprint, subCommand) => {
   aliases = [].concat(blueprint.settings.aliases || aliases);
 
   // default usage
-  if (!usage) {
-    //usage = `Description:\n  ${blueprint.description()}\n\n`;
-    usage = `Usage:\n  $0 generate ${command}`;
-    aliases.forEach(
-      alias =>
-        (usage += `\n  $0 generate ${command.replace(blueprint.name, alias)}`)
-    );
-  }
+  let usage = `Usage:\n  $0 generate ${command}`;
+  aliases.forEach(
+    alias =>
+      (usage += `\n  $0 generate ${command.replace(blueprint.name, alias)}`)
+  );
 
   // default options from settings
   if (options && blueprint.settings) {
@@ -87,10 +83,10 @@ const buildBlueprintCommand = (blueprint, subCommand) => {
         options,
         rawArgs: argv
       },
-      debug: argv.verbose,
-      dryRun: argv.dryRun
+      debug: argv.verbose || false,
+      dryRun: argv.dryRun || false
     };
-    subCommand.run(blueprint.name, cliArgs);
+    runner.run(blueprint.name, cliArgs);
   };
 
   return {

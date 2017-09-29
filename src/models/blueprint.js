@@ -31,6 +31,7 @@ export default class Blueprint {
   constructor(blueprintPath) {
     this.path = blueprintPath;
     this.name = path.basename(blueprintPath);
+    this.command = this.command || {};  // default if not set by mixin
   }
 
   // HOOK: this can be overridden
