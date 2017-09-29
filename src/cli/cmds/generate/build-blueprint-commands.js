@@ -6,17 +6,14 @@ import buildBlueprintCommand from './build-blueprint-command';
 const subCommand = new Generate();
 
 /*
-  TODO: refactor to use new BlueprintCollection, should just be a simple
-        loop calling out to buildBlueprintCommand
+  TODO: refactor to use new BlueprintCollection, should just
+        be a simple map to buildBlueprintCommand
 */
-const buildBlueprintCommands = yargs => {
-  Blueprint.loadRunnable().forEach(blueprint => {
+const buildBlueprintCommands = () =>
+  Blueprint.loadRunnable().map(blueprint => {
     loadBlueprintSettings(blueprint);
-    yargs.command(buildBlueprintCommand(blueprint, subCommand));
+    return buildBlueprintCommand(blueprint, subCommand);
   });
-
-  return yargs;
-};
 
 export default buildBlueprintCommands;
 

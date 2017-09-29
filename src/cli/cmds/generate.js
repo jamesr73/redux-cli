@@ -26,7 +26,10 @@ module.exports = {
         'Commands:': 'Blueprints:',
         'Options:': 'Blueprint Options:'
       });
-    return buildBlueprintCommands(yargs);
+    return buildBlueprintCommands().reduce(
+      (yargs, command) => yargs.command(command),
+      yargs
+    );
   },
   handler: argv => console.log(`Unrecognised blueprint '${argv.blueprint}'`)
 };
