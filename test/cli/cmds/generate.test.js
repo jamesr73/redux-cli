@@ -101,7 +101,7 @@ describe('(CLI) Generate', () => {
       spy.mockRestore();
     });
     test('demands <blueprint> and <name>', done => {
-      buildParser().parse('generate blueprint', (err, argv, output) => {
+      buildParser().parse('generate blueprint', err => {
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toEqual(
           'Not enough non-option arguments: got 0, need at least 1'
