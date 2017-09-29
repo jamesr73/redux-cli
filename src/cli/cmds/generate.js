@@ -31,5 +31,5 @@ module.exports = {
       yargs
     );
   },
-  handler: argv => console.log(`Unrecognised blueprint '${argv.blueprint}'`)
+  handler: argv => console.error(`Unrecognised blueprint '${argv.blueprint}'`)
 };
