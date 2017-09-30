@@ -1,3 +1,5 @@
+import getCommonOptions from './common-blueprint-options';
+
 /*
   Build a yargs command module object from options defined in the blueprint
   https://github.com/yargs/yargs/blob/master/docs/advanced.md#providing-a-command-module
@@ -41,8 +43,11 @@ const buildBlueprintCommand = (blueprint, runner) => {
       (usage += `\n  $0 generate ${command.replace(blueprint.name, alias)}`)
   );
 
-  // default options from settings
-  if (options && blueprint.settings) {
+  // merge options into common options
+  options = { ...getCommonOptions(), ...options };
+
+  // assign option defaults from settings
+  if (blueprint.settings) {
     Object.keys(options).forEach(option => {
       if (blueprint.settings[option]) {
         options[option].default = blueprint.settings[option];

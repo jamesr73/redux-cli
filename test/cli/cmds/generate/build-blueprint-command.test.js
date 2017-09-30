@@ -14,7 +14,7 @@ describe('(CLI) buildBlueprintCommand', () => {
         return 'test description';
       },
       command: {},
-      settings: {}
+      settings: { path: 'foo/bar' }
     };
     run = jest.fn();
     subCommand = { run };
@@ -264,10 +264,12 @@ describe('(CLI) buildBlueprintCommand', () => {
         expect(sanitize.mock.calls.length).toEqual(1);
       });
       test('passed argv', () => {
-        const argv = { foo: 'bar' };
-        callHandler(argv);
+        callHandler({ foo: 'bar' });
         expect(sanitize.mock.calls[0].length).toEqual(1);
-        expect(sanitize.mock.calls[0][0]).toEqual(argv);
+        expect(sanitize.mock.calls[0][0]).toEqual({
+          foo: 'bar',
+          path: 'foo/bar'
+        });
       });
       test('passed argv merged into settings', () => {
         blueprint.settings = { foo: 'bar', fizz: 'buzz' };
@@ -308,9 +310,10 @@ describe('(CLI) buildBlueprintCommand', () => {
       });
       test('cliArgs.entity.options passed argv', () => {
         const argv = { name: 'test_entity_name', foo: 'bar' };
+        const merged = { ...argv, path: 'foo/bar' };
         callHandler(argv);
         const entity = run.mock.calls[0][1].entity;
-        expect(entity.options).toEqual(argv);
+        expect(entity.options).toEqual(merged);
       });
       test('cliArgs.entity.options passed argv merged into settings', () => {
         blueprint.settings = { foo: 'bar', fizz: 'buzz' };
