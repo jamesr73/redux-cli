@@ -44,7 +44,7 @@ const buildBlueprintCommand = (blueprint, runner) => {
   );
 
   // merge options into common options
-  options = { ...getCommonOptions(), ...options };
+  options = { ...getCommonOptions(blueprint), ...options };
 
   // assign option defaults from settings
   if (blueprint.settings) {

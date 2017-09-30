@@ -4,12 +4,13 @@
   Always return a new object so that individual blueprint defaults/settings
   can be set.
 */
-const getCommonOptions = () => ({
+const getCommonOptions = blueprint => ({
   path: {
     alias: 'P',
     description: 'set __path__ for this blueprint',
     normalize: true,
-    required: true
+    required: true,
+    default: blueprint.name
   }
 });
 
